@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<!DOCTYPE nvidia_smi_log SYSTEM "nvsmi_device_v12.dtd">
+<nvidia_smi_log>
+  <driver_version>560.00</driver_version>
+  <cuda_version>12.6</cuda_version>
+  <gpu id="00000000:01:00.0">
+    <product_name>Fake GeForce RTX 3060</product_name>
+    <uuid>GPU-11111111-2222-3333-4444-555555555555</uuid>
+    <serial>SERIAL-FAKE-001</serial>
+    <board_part_number>BOARD-FAKE-001</board_part_number>
+  </gpu>
+</nvidia_smi_log>
