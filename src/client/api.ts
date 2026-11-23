@@ -32,6 +32,17 @@ export interface GpuMetrics {
   clocksMaxSm: number | null;
 }
 
+export interface ToolkitRecommendation {
+  status: "install" | "current" | "upgrade" | "newer_than_driver" | "unknown";
+  recommendedToolkit: string | null;
+  driverBranch: string | null;
+  notes: string | null;
+  message: string;
+  lastChecked: string;
+  downloadsUrl: string;
+  sources: Array<{ title: string; url: string }>;
+}
+
 export interface CudaInfo {
   driverMaxCuda: string | null;
   toolkit: {
@@ -41,6 +52,7 @@ export interface CudaInfo {
     source: string;
   };
   explanation: string;
+  recommendation: ToolkitRecommendation;
 }
 
 export interface ProcessesInfo {

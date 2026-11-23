@@ -1,9 +1,25 @@
 /**
  * Copyright Advanced Software and AI Solutions LLC
  */
-import { Link, Paper, Typography } from "@mui/material";
+import { Alert, Box, Link, List, ListItem, Paper, Typography } from "@mui/material";
 import type { CudaInfo, SystemInfo } from "../api";
 import { na } from "../format";
+
+function statusSeverity(
+  status: CudaInfo["recommendation"]["status"] | undefined,
+): "info" | "success" | "warning" | "error" {
+  switch (status) {
+    case "current":
+      return "success";
+    case "upgrade":
+    case "install":
+      return "info";
+    case "newer_than_driver":
+      return "warning";
+    default:
+      return "info";
+  }
+}
 
 export function CudaCard({
   system,
@@ -13,6 +29,8 @@ export function CudaCard({
   cuda: CudaInfo | null;
 }) {
   const toolkit = cuda?.toolkit;
+  const rec = cuda?.recommendation;
+
   return (
     <Paper
       elevation={0}
@@ -40,25 +58,56 @@ export function CudaCard({
         {toolkit?.active ? ` Active nvcc: ${toolkit.active}` : ""}
       </Typography>
 
-      {!toolkit?.installed && (
-        <Typography variant="body2">
-          Install a toolkit from{" "}
-          <Link
-            href="https://developer.nvidia.com/cuda-downloads"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            NVIDIA CUDA downloads
-          </Link>
-          . Recommendation arrives in Phase 2.
-        </Typography>
+      {rec && (
+        <Alert
+          severity={statusSeverity(rec.status)}
+          sx={{ mb: 2 }}
+          role="status"
+          aria-label={`Toolkit recommendation: ${rec.message}`}
+        >
+          <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+            Recommendation
+            {rec.recommendedToolkit ? `: CUDA Toolkit ${rec.recommendedToolkit}` : ""}
+            {rec.driverBranch ? ` (${rec.driverBranch})` : ""}
+          </Typography>
+          <Typography variant="body2">{rec.message}</Typography>
+          {rec.notes && (
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              {rec.notes}
+            </Typography>
+          )}
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            <Link href={rec.downloadsUrl} target="_blank" rel="noopener noreferrer">
+              NVIDIA CUDA downloads
+            </Link>
+            {" · "}
+            Catalog last checked {rec.lastChecked}
+          </Typography>
+        </Alert>
       )}
+
+      {rec?.sources?.length ? (
+        <Box sx={{ mb: 1 }}>
+          <Typography variant="caption" color="text.secondary" id="rec-sources-label">
+            Sources
+          </Typography>
+          <List dense aria-labelledby="rec-sources-label" sx={{ py: 0 }}>
+            {rec.sources.map((s) => (
+              <ListItem key={s.url} sx={{ py: 0.25, px: 0, minHeight: 44 }}>
+                <Link href={s.url} target="_blank" rel="noopener noreferrer" variant="body2">
+                  {s.title}
+                </Link>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      ) : null}
 
       {system?.platform === "wsl" && (
         <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
           WSL note: the driver comes from the Windows host. nvidia-smi is often under
           /usr/lib/wsl/lib. nvcc exists only if a toolkit is installed inside WSL. Process lists
-          are often empty here.
+          are often empty here. See docs/lan-access.md for LAN reach from other devices.
         </Typography>
       )}
     </Paper>

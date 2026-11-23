@@ -16,6 +16,10 @@ import { buildCspHeader, createNonce } from "./security/csp.js";
 import { NvidiaService, DRIVER_CUDA_EXPLANATION } from "./services/nvidia.js";
 import { SharedSampler } from "./sampler.js";
 import { logRequest } from "./log.js";
+import {
+  buildRecommendation,
+  loadRecommendationCatalog,
+} from "../core/recommend.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -115,10 +119,13 @@ export async function buildApp(config: AppConfig): Promise<{
   app.get("/api/cuda", async () => {
     const meta = await service.getDriverMeta();
     const toolkit = await service.getToolkit();
+    const catalog = loadRecommendationCatalog();
+    const recommendation = buildRecommendation(meta.driverMaxCuda, toolkit, catalog);
     return {
       driverMaxCuda: meta.driverMaxCuda,
       toolkit,
       explanation: DRIVER_CUDA_EXPLANATION,
+      recommendation,
     };
   });
 

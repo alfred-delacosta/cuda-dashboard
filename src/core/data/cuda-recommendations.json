@@ -1,0 +1,90 @@
+{
+  "lastChecked": "2026-11-23",
+  "downloadsUrl": "https://developer.nvidia.com/cuda-downloads",
+  "sources": [
+    {
+      "title": "CUDA Toolkit Release Notes (driver branches)",
+      "url": "https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html"
+    },
+    {
+      "title": "CUDA minor version compatibility",
+      "url": "https://docs.nvidia.com/deploy/cuda-compatibility/latest/minor-version-compatibility.html"
+    },
+    {
+      "title": "NVIDIA CUDA Toolkit downloads",
+      "url": "https://developer.nvidia.com/cuda-downloads"
+    }
+  ],
+  "toolkits": [
+    {
+      "version": "13.5",
+      "driverBranch": "R620",
+      "notes": "Newest features need an R620-class driver that reports CUDA 13.5."
+    },
+    {
+      "version": "13.4",
+      "driverBranch": "R615",
+      "notes": "Fits drivers that report up to CUDA 13.4."
+    },
+    {
+      "version": "13.3",
+      "driverBranch": "R610",
+      "notes": "Fits drivers that report up to CUDA 13.3."
+    },
+    {
+      "version": "13.2",
+      "driverBranch": "R595",
+      "notes": "Fits drivers that report up to CUDA 13.2."
+    },
+    {
+      "version": "13.1",
+      "driverBranch": "R590",
+      "notes": "Fits drivers that report up to CUDA 13.1."
+    },
+    {
+      "version": "13.0",
+      "driverBranch": "R580",
+      "notes": "Baseline CUDA 13 toolkit for R580-class drivers."
+    },
+    {
+      "version": "12.9",
+      "driverBranch": "R575",
+      "notes": "Latest CUDA 12 toolkit family for drivers that top out in 12.9."
+    },
+    {
+      "version": "12.8",
+      "driverBranch": "R570",
+      "notes": "Fits drivers that report up to CUDA 12.8."
+    },
+    {
+      "version": "12.6",
+      "driverBranch": "R560",
+      "notes": "Common CUDA 12.6 toolkit for R560-class drivers."
+    },
+    {
+      "version": "12.4",
+      "driverBranch": "R550",
+      "notes": "Fits drivers that report up to CUDA 12.4."
+    },
+    {
+      "version": "12.2",
+      "driverBranch": "R535",
+      "notes": "Fits drivers that report up to CUDA 12.2."
+    },
+    {
+      "version": "12.1",
+      "driverBranch": "R530",
+      "notes": "Fits drivers that report up to CUDA 12.1."
+    },
+    {
+      "version": "12.0",
+      "driverBranch": "R525",
+      "notes": "Baseline CUDA 12 toolkit for R525-class drivers."
+    },
+    {
+      "version": "11.8",
+      "driverBranch": "R520",
+      "notes": "Last widely used CUDA 11 toolkit for older drivers."
+    }
+  ]
+}

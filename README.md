@@ -40,7 +40,7 @@ npm start
 
 On WSL the driver comes from the Windows host. `nvidia-smi` is often at `/usr/lib/wsl/lib/nvidia-smi`. `nvcc` exists only if a CUDA toolkit is installed inside WSL. Compute process lists are often empty.
 
-LAN reach from phones may need mirrored networking or a portproxy. Details land in Phase 2.
+For LAN reach from phones (mirrored networking or portproxy), see [docs/lan-access.md](docs/lan-access.md).
 
 ## Environment
 
@@ -67,6 +67,8 @@ Copy `.env.example` to `.env`. Loaded with `process.loadEnvFile` when present (e
 3. Allow `PORT` in Windows Firewall on the **Private** profile only. Do this yourself; this project never changes firewall rules.
 4. Browse to `http://dell-aio.local:3000`. The header shows `APP_HOSTNAME:PORT`.
 
+Full WSL networking notes: [docs/lan-access.md](docs/lan-access.md).
+
 ## Security and privacy
 
 - Client IP must match `ALLOWED_CIDRS` or the response is 403.
@@ -76,9 +78,11 @@ Copy `.env.example` to `.env`. Loaded with `process.loadEnvFile` when present (e
 - Commands run only from a fixed allowlist via `execFile` with `shell: false`. No endpoint accepts a command, argument, or path.
 - Identifiers and process names are hidden by default.
 
-## CUDA note
+## CUDA note and recommendations
 
-The CUDA version reported by `nvidia-smi` is the newest CUDA the **driver** supports. It is not the installed CUDA toolkit. The UI states this next to the value. Toolkit detection (installed versions / active `nvcc`) is included; recommendations arrive in Phase 2.
+The CUDA version reported by `nvidia-smi` is the newest CUDA the **driver** supports. It is not the installed CUDA toolkit. The UI states this next to the value.
+
+Toolkit detection (installed versions / active `nvcc`) is paired with a recommendation from `src/core/data/cuda-recommendations.json` (sources and `lastChecked` included in the API and UI). Update that file when NVIDIA ships new toolkit or driver branch mappings. This app never downloads or installs a toolkit for you.
 
 ## API
 
@@ -87,7 +91,7 @@ The CUDA version reported by `nvidia-smi` is the newest CUDA the **driver** supp
 | GET | `/api/health` | `{ ok: true }` |
 | GET | `/api/system` | Platform, hostname, smi source, driver |
 | GET | `/api/gpus` | Parsed GPU metrics |
-| GET | `/api/cuda` | Driver max CUDA, toolkit, explanation |
+| GET | `/api/cuda` | Driver max CUDA, toolkit, explanation, recommendation |
 | GET | `/api/processes` | Compute apps (privacy filtered) |
 | GET | `/api/raw/:id` | Allowlisted raw output |
 | GET | `/api/stream` | SSE `{ gpus, processes, at }` |
@@ -95,7 +99,3 @@ The CUDA version reported by `nvidia-smi` is the newest CUDA the **driver** supp
 ## Scripts
 
 `npm run dev` · `build` · `start` · `lint` · `lint:copy` · `typecheck` · `test` · `check`
-
-## Phase 2 (later)
-
-CUDA toolkit recommendation from a small data file, `docs/lan-access.md` for WSL networking, and polish. Only after Phase 1 is confirmed working.
