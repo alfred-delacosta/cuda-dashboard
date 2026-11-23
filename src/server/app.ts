@@ -33,6 +33,14 @@ function sendError(reply: FastifyReply, status: number, code: string, message: s
   return reply.status(status).send({ error: { code, message } });
 }
 
+function injectCspNonce(html: string, nonce: string): string {
+  let out = html.replace(/__CSP_NONCE__/g, nonce);
+  // Ensure script/link tags that Vite emits can carry nonce for stricter CSP.
+  out = out.replace(/<script(?![^>]*nonce=)/gi, `<script nonce="${nonce}"`);
+  out = out.replace(/<link(?![^>]*nonce=)/gi, `<link nonce="${nonce}"`);
+  return out;
+}
+
 export async function buildApp(config: AppConfig): Promise<{
   app: FastifyInstance;
   ctx: AppContext;
@@ -199,6 +207,8 @@ export async function buildApp(config: AppConfig): Promise<{
       root: clientDist,
       prefix: "/",
       wildcard: false,
+      // Serve index.html via the SPA handler so the CSP nonce is injected.
+      index: false,
     });
 
     app.setNotFoundHandler(async (request, reply) => {
@@ -209,11 +219,7 @@ export async function buildApp(config: AppConfig): Promise<{
         return sendError(reply, 404, "not_found", "UI not built");
       }
       const nonce = (request as FastifyRequest & { cspNonce?: string }).cspNonce ?? createNonce();
-      let html = readFileSync(indexPath, "utf8");
-      html = html.replace(/__CSP_NONCE__/g, nonce);
-      // Ensure script/link tags that Vite emits can carry nonce for stricter CSP.
-      html = html.replace(/<script(?![^>]*nonce=)/gi, `<script nonce="${nonce}"`);
-      html = html.replace(/<link(?![^>]*nonce=)/gi, `<link nonce="${nonce}"`);
+      const html = injectCspNonce(readFileSync(indexPath, "utf8"), nonce);
       return reply.type("text/html").send(html);
     });
   } else {
