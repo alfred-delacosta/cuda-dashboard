@@ -121,6 +121,25 @@ describe("API", () => {
     }
     expect(last).toBe(429);
   });
+
+  it("GET / injects CSP nonce into index.html", async () => {
+    const res = await app.inject({
+      method: "GET",
+      url: "/",
+      headers: { host: "localhost:3000" },
+      remoteAddress: "127.0.0.1",
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.headers["content-type"]).toMatch(/text\/html/);
+    const body = res.body;
+    expect(body).not.toContain("__CSP_NONCE__");
+    const csp = String(res.headers["content-security-policy"] ?? "");
+    const nonceMatch = csp.match(/'nonce-([^']+)'/);
+    expect(nonceMatch).toBeTruthy();
+    const nonce = nonceMatch![1];
+    expect(body).toContain(`content="${nonce}"`);
+    expect(body).toContain(`nonce="${nonce}"`);
+  });
 });
 
 describe("allowlist isolation", () => {
