@@ -6,7 +6,7 @@
     "dev": "node --watch --experimental-strip-types src/server/index.ts",
     "build": "npm run build:client && npm run build:server",
     "build:client": "vite build",
-    "build:server": "tsc -p tsconfig.server.json",
+    "build:server": "tsc -p tsconfig.server.json && node scripts/copy-data.mjs",
     "start": "node dist/server/index.js",
     "lint": "eslint .",
     "lint:copy": "node scripts/lint-copy.mjs",
